@@ -11,6 +11,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 
 class SendNewsletterJob implements ShouldQueue
 {
@@ -38,6 +39,17 @@ class SendNewsletterJob implements ShouldQueue
         // dd($this->user->name);
         //
         // SendNewsletterMail
-        Mail::to($this->user->email)->send(new SendNewsletterMail($this->user));
+        // Mail::to($this->user->email)->send(new SendNewsletterMail($this->user));
+
+        Redis::throttle('key')->block(0)->allow(1)->every(5)->then(function () {
+            info('Lock obtained...');
+    
+            // Handle job...
+            Mail::to($this->user->email)->send(new SendNewsletterMail($this->user));
+        }, function () {
+            // Could not obtain lock...
+    
+            return $this->release(5);
+        });
     }
 }

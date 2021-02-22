@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use App\Http\Controllers\NewsletterController;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 
 class SendNewsletter extends Command
 {
@@ -38,6 +40,7 @@ class SendNewsletter extends Command
      */
     public function handle()
     {
+
         NewsletterController::sendMail();
         return 0;
     }
