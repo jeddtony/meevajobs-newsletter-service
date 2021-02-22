@@ -49,7 +49,8 @@ exports.create = async (req, res) => {
 exports.findAll = async (req, res) => {
   
     let users = await User.findAll()
-    return res.status(200).send({message: users});
+    // return res.status(200).send({message: users});
+    return successResponse(res, 'Showing list of subscribers', users)
 };
 
 // Find a single Tutorial with an id
