@@ -1,35 +1,27 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-const cors = require("cors");
+const app = require('./app')
 
-const app = express();
-
-var corsOptions = {
-  origin: "http://localhost:8083"
-};
-
-app.use(cors(corsOptions));
-
-// parse requests of content-type - application/json
-app.use(bodyParser.json());
-
-// parse requests of content-type - application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
-
-const db = require("./app/models");
-db.sequelize.sync({ force: true }).then(() => {
-    console.log("Drop and re-sync db.");
-  });
-
-// simple route
-app.get("/", (req, res) => {
-  res.json({ message: "Welcome to newsletter subscription service." });
+app.listen(process.env.PORT || 4003, function(err) {
+    if (err) console.log("Error in server setup") 
+    console.log("Server listening on Port ", 4003); 
 });
 
-require("./app/routes/user.route")(app);
+// Restarting the server
+const server = require('http').createServer(app);
 
-// set port, listen for requests
-const PORT = process.env.PORT || 8082;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}.`);
-});
+// Implementing graceful shutdown
+process.on('SIGINT', () => {
+    console.info('SIGINT signal received.')
+  
+    // Stops the server from accepting new connections and finishes existing connections.
+    server.close(function(err) {
+      // if error, log and exit with error (1 code)
+      if (err) {
+        console.error(err)
+        process.exit(1)
+      }
+  
+      // close your database connection and exit with success (0 code)
+      // for example with mongoose
+     
+    })
+  })

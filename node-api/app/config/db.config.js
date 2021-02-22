@@ -1,6 +1,6 @@
 module.exports = {
     HOST: "localhost",
-    USER: "root",
+    USER: process.env.DB_USER,
     PASSWORD: "qwertyuiop",
     DB: "newsletter_service",
     dialect: "mysql",

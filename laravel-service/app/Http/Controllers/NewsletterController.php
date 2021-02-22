@@ -11,7 +11,7 @@ class NewsletterController extends Controller
     //
     public static function sendMail() {
         // $users = User::all();
-        $users = User::all();
+        $users = User::where('active', true)->get();
         // dd($users);
         foreach ($users as $user) {
             # code...
